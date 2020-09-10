@@ -1,19 +1,18 @@
-neighbor 10.255.1.254 {
-	router-id 10.255.42.1;
+neighbor 10.4.100.1 {
+	router-id 10.4.100.3;
 	local-as 65042;
 	peer-as 65001;
 
 	api services {
-		processes [ watch-loghost, watch-mailhost ];
+		processes [ watch-dns ];
+	}
+
+	family {
+		ipv4 unicast;
 	}
 }
 
-process watch-loghost {
+process watch-dns {
 	encoder text;
-	run python -m exabgp healthcheck --cmd "nc -z -w2 -u localhost 514" --no-syslog --label loghost --withdraw-on-down --ip 10.255.255.1/32;
-}
-
-process watch-mailhost {
-	encoder text;
-	run python -m exabgp healthcheck --cmd "nc -z -w2 localhost 25" --no-syslog --label mailhost --withdraw-on-down --ip 10.255.255.2/32;
+	run python -m exabgp healthcheck --cmd "/usr/local/bin/check_dns.py localhost 3301"  --label dns --withdraw-on-down --ip 10.4.1.10/32;
 }

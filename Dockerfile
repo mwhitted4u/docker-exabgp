@@ -1,5 +1,5 @@
 FROM alpine:3.7
-MAINTAINER Mike Nowak <https://github.com/mikenowak>
+MAINTAINER Matt Whitted <https://github.com/mwhitted4u>
 
 RUN apk --no-cache add wget curl python python-dev py-setuptools coreutils netcat-openbsd bash \
     && apk --no-cache add --virtual build-dependencies build-base py-pip  \
@@ -9,6 +9,7 @@ RUN apk --no-cache add wget curl python python-dev py-setuptools coreutils netca
 
 ADD entrypoint.sh /
 ADD exabgp.conf.example /usr/etc/exabgp/
+ADD check_dns.py /usr/local/bin/
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["exabgp"]
