@@ -26,7 +26,7 @@ The container works with `NET_ADMIN` capabilities and `net=host` to automaticall
 
  - If other configuration variables are necessary (multihop, authentication, etc), consult the exabgp documentation and add additional lines to the neighbor configuration section as needed.
 
- - Change the IP address after `--ip` in the `run` line under the watch-dns section.  This should be set to the Anycast IP address you wish to advertise.  This IP address will be automatically added as a loopback IP on the host system and will be advertised in BGP announcements.  T
+ - Change the IP address after `--ip` in the `run` line under the watch-dns section.  This should be set to the Anycast IP address you wish to advertise.  This IP address will be automatically added as a loopback IP on the host system and will be advertised in BGP announcements.  
 
  - If you have the DNS container's API port exposed as something other than port 3301, change the 3301 in the `run` line to the appropriate port.
 
@@ -56,6 +56,22 @@ The container works with `NET_ADMIN` capabilities and `net=host` to automaticall
 ```docker-compose -p ddi -f edge-compose.yml up -d```
 
 If you're using a different project name than `ddi`, change the value accordingly.
+
+# NTP healthchecks
+
+It's sometimes customary for organizations to run NTP services from the same hosts providing DNS.  An NTP health check script has been added to the container to support anycasting of NTP on a separate IP address.  The container does not provide NTP service itself - one must run NTP service on the host, or in a separate container.
+
+The NTP health check is fairly simplistic - it queries the NTP service, ensures there is a response, and compares the reported stratum with a defined minimum stratum.  The BGP service will advertise routes as long as the NTP services is reachable and the stratum is equal to or higher than the defined minimum (default 2 in the example below).
+
+To add NTP health checks / anycast, add the following section to your `exabgp.conf` file:
+
+```
+process watch-ntp {
+        encoder text;
+        run python -m exabgp healthcheck --cmd "/usr/local/bin/check_ntp.py localhost 2" --no-syslog --label ntp --withdraw-on-down --ip 10.4.1.11/32;
+```
+
+Change the `2` in the healthcheck command to your desired minimum stratum.  This value should be equal to the stratum expected of the local NTP service.  For example, if the locally configured NTP service is referencing stratum 1 servers, the local service would be stratum 2, and the health check should be configured for a minimum stratum of 2.  The BGP service will remove announcements for the defined anycast IP if the stratum is outside the minimum (typical if the local service looses sync to its peers), or if the NTP service doesn't respond.
 
 # Verification
 
