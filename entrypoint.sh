@@ -20,7 +20,7 @@ if [ "$1" == 'exabgp' ]; then
   fi  
 
   # run 
-  /usr/bin/exabgp /usr/etc/exabgp/exabgp.conf
+  /usr/bin/exabgp -e /usr/etc/exabgp/exabgp.env /usr/etc/exabgp/exabgp.conf
 else 
   exec "$@"
 fi

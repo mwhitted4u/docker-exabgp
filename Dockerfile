@@ -1,11 +1,12 @@
-FROM alpine:3.7
+FROM alpine:3.13
 MAINTAINER Matt Whitted <https://github.com/mwhitted4u>
 
-RUN apk --no-cache add wget curl python python-dev py-setuptools coreutils netcat-openbsd bash \
-    && apk --no-cache add --virtual build-dependencies build-base py-pip  \
+RUN apk --no-cache add wget curl python3 python3-dev py-setuptools coreutils netcat-openbsd bash py3-requests py3-pip \
+    && apk --no-cache add --virtual build-dependencies build-base \
     && mkdir -p /usr/etc/exabgp \
-    && pip install ipaddr exabgp==4.0.5 ipy requests ntplib \
-    && apk del build-dependencies 
+    && pip3 install ipaddr exabgp==4.2.13 ipy ntplib \
+    && apk del build-dependencies \
+    && ln -s /usr/bin/python3 /usr/bin/python
 
 ADD entrypoint.sh /
 ADD exabgp.conf.example /usr/etc/exabgp/

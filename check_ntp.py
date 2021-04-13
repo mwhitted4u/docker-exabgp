@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Usage: check_ntp.py <host> <min_stratum>
 $ check_ntp.py pool.ntp.org 3
