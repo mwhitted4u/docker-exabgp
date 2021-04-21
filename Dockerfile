@@ -12,6 +12,7 @@ ADD entrypoint.sh /
 ADD exabgp.conf.example /usr/etc/exabgp/
 ADD check_dns.py /usr/local/bin/
 ADD check_ntp.py /usr/local/bin/
+ADD health.sh /usr/local/bin/
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["exabgp"]
