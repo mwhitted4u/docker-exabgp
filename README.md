@@ -42,6 +42,11 @@ The container works with `NET_ADMIN` capabilities and `net=host` to automaticall
         max-file: "10"
     restart: unless-stopped
     stop_grace_period: 30s
+    healthcheck:
+      test: /usr/local/bin/health.sh
+      interval: 15s
+      timeout: 10s
+      start_period: 120s
     network_mode: host
     cap_add:
       - NET_ADMIN

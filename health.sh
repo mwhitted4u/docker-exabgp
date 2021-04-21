@@ -8,7 +8,7 @@ established_peers=`exabgpcli show neighbor summary | awk '{ print $4; }' | grep 
 
 # Check if exabgpcli had non-zero exit
 if [ $? -ne 0 ]; then
-	echo "Failed to run exabgpcli, perhaps exabgp is not running?"
+	echo "The exabgpcli command returned non-zero status"
 	exit 1
 fi
 
