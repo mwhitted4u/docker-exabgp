@@ -5,8 +5,10 @@ This is a fork of the excellent exabgp container created by Mike Nowak. Thanks M
 https://github.com/mikenowak/docker-exabgp
 
 Modifications include...
+ - Update Alpine base, exabgp version, and dependencies
  - Adjustments to the sample exabgp.conf file to support compatibility with Ubiquiti EdgeRouter devices
  - Inclusion of a script to check the health of an NS1 DDI DNS container
+ - Inclusion of a script to check exabgp health and report it to Docker
 
 The container works with `NET_ADMIN` capabilities and `net=host` to automatically add loopback IP addresses to the host O/S.  The necessary routes for the created loopbacks are then advertised to neighbours.
 
