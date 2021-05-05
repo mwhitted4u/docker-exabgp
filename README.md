@@ -80,7 +80,7 @@ process watch-ntp {
 
 Change the `2` in the healthcheck command to your desired minimum stratum.  This value should be equal to the stratum expected of the local NTP service.  For example, if the locally configured NTP service is referencing stratum 1 servers, the local service would be stratum 2, and the health check should be configured for a minimum stratum of 2.  The BGP service will remove announcements for the defined anycast IP if the stratum is outside the minimum (typical if the local service looses sync to its peers), or if the NTP service doesn't respond.
 
-# Verification
+# Verification and Troubleshooting
 
 Once the anycast service is running, use the following command to verify that healthchecks are passing and announcements are being sent:
 
@@ -94,4 +94,11 @@ $ docker logs ddi_anycast_1
 
 Note that the logs indicate routes being added.  If you instead see logs showing routes being removed, the healthcheck is failing.  Confirm that the DNS container is running, the correct API port (usually 3301) is exposed, and that the DNS container is reporting `healthy`.
 
-At this point, you should contact your network administrator to confirm that routes for the anycast IP are propagating properly.
+To confirm that exabgp has successfully peered with its neighbors, run the following command:
+```
+$ docker exec ddi_anycast_1 exabgpcli show neighbor summary
+Peer            AS        up/down state       |     #sent     #recvd
+10.4.100.1      65001     9:29:24 established           4          0
+```
+
+In the above example, exabgp has one active session.  A state of _established_ indicates a successful peering.  Note that you can replace _summary_ in the command with _extensive_ for detailed information about each peer.
